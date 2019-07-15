@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">GitHub Users</string>
+    <string name="nav_user_detail">User Detail</string>
 </resources>
