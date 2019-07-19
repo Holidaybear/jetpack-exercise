@@ -10,6 +10,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import retrofit2.Response
+import tw.holidaybear.jetpack.exercise.data.GitHubAPI
 
 @RunWith(JUnit4::class)
 class GitHubAPITest {

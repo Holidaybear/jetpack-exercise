@@ -1,4 +1,4 @@
-package tw.holidaybear.jetpack.exercise
+package tw.holidaybear.jetpack.exercise.data
 
 import com.google.gson.annotations.SerializedName
 

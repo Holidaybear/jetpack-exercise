@@ -1,4 +1,4 @@
-package tw.holidaybear.jetpack.exercise
+package tw.holidaybear.jetpack.exercise.data
 
 import retrofit2.Response
 import retrofit2.Retrofit
