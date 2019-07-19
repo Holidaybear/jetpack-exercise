@@ -14,11 +14,13 @@ fun RecyclerView.setItems(items: List<User>) {
 }
 
 @BindingAdapter("imageUrl")
-fun ImageView.setImage(imageUrl: String) {
-    Glide.with(this.context)
-        .asBitmap()
-        .load(imageUrl)
-        .transition(BitmapTransitionOptions().crossFade(300))
-        .apply(RequestOptions.circleCropTransform())
-        .into(this)
+fun ImageView.setImage(imageUrl: String?) {
+    imageUrl?.let {
+        Glide.with(this.context)
+            .asBitmap()
+            .load(it)
+            .transition(BitmapTransitionOptions().crossFade(300))
+            .apply(RequestOptions.circleCropTransform())
+            .into(this)
+    }
 }

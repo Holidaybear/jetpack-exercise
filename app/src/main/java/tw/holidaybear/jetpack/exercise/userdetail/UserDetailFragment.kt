@@ -4,23 +4,36 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.navArgs
-import tw.holidaybear.jetpack.exercise.R
+import tw.holidaybear.jetpack.exercise.databinding.FragmentUserDetailBinding
 
 class UserDetailFragment : Fragment() {
 
+    private lateinit var viewDataBinding: FragmentUserDetailBinding
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_user_detail, container, false)
+        val viewModel = ViewModelProviders.of(this).get(UserDetailViewModel::class.java)
+        viewDataBinding = FragmentUserDetailBinding.inflate(inflater, container, false).apply {
+            viewmodel = viewModel
+        }
+        return viewDataBinding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
-        val safeArgs: UserDetailFragmentArgs by navArgs()
-        val userLogin = safeArgs.argUserLogin
+        viewDataBinding.lifecycleOwner = this.viewLifecycleOwner
+        setupUserDetail()
+    }
 
-        view.findViewById<TextView>(R.id.user_login).text = userLogin
+    private fun setupUserDetail() {
+        val viewModel = viewDataBinding.viewmodel
+        if (viewModel != null) {
+            val safeArgs: UserDetailFragmentArgs by navArgs()
+            val userLogin = safeArgs.argUserLogin
+            viewModel.loadUser(userLogin)
+        }
     }
 }

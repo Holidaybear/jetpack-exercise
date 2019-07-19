@@ -8,6 +8,7 @@ import kotlinx.coroutines.launch
 import tw.holidaybear.jetpack.exercise.data.User
 import tw.holidaybear.jetpack.exercise.data.UserRemoteDataSource
 import tw.holidaybear.jetpack.exercise.data.UserRepository
+import tw.holidaybear.jetpack.exercise.util.Event
 
 class UserListViewModel : ViewModel() {
 
@@ -15,6 +16,9 @@ class UserListViewModel : ViewModel() {
 
     private val _items = MutableLiveData<List<User>>().apply { value = emptyList() }
     val items: LiveData<List<User>> = _items
+
+    private val _openUserEvent = MutableLiveData<Event<String>>()
+    val openUserEvent: LiveData<Event<String>> = _openUserEvent
 
     init {
         loadUsers()
@@ -24,5 +28,9 @@ class UserListViewModel : ViewModel() {
         viewModelScope.launch {
             _items.value = repository.getUsers()
         }
+    }
+
+    fun openUser(login: String) {
+        _openUserEvent.value = Event(login)
     }
 }

@@ -25,7 +25,6 @@
 
         <argument
             android:name="arg_user_login"
-            android:defaultValue="1"
             app:argType="string"/>
 
     </fragment>
