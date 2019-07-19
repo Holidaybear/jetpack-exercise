@@ -1,4 +1,4 @@
-package tw.holidaybear.jetpack.exercise
+package tw.holidaybear.jetpack.exercise.userdetail
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
+import tw.holidaybear.jetpack.exercise.R
 
 class UserDetailFragment : Fragment() {
 
