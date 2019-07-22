@@ -6,12 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import tw.holidaybear.jetpack.exercise.data.User
-import tw.holidaybear.jetpack.exercise.data.UserRemoteDataSource
 import tw.holidaybear.jetpack.exercise.data.UserRepository
 
-class UserDetailViewModel : ViewModel() {
-
-    private val repository = UserRepository(UserRemoteDataSource)
+class UserDetailViewModel(private val repository: UserRepository) : ViewModel() {
 
     private val _user = MutableLiveData<User>()
     val user: LiveData<User> = _user

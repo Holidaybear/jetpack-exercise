@@ -5,16 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import tw.holidaybear.jetpack.exercise.databinding.FragmentUserDetailBinding
+import tw.holidaybear.jetpack.exercise.util.getViewModelFactory
 
 class UserDetailFragment : Fragment() {
+
+    private val viewModel by viewModels<UserDetailViewModel> { getViewModelFactory() }
 
     private lateinit var viewDataBinding: FragmentUserDetailBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val viewModel = ViewModelProviders.of(this).get(UserDetailViewModel::class.java)
         viewDataBinding = FragmentUserDetailBinding.inflate(inflater, container, false).apply {
             viewmodel = viewModel
         }
