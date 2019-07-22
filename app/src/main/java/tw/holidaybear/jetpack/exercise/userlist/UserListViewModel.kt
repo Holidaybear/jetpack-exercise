@@ -17,6 +17,9 @@ class UserListViewModel : ViewModel() {
     private val _items = MutableLiveData<List<User>>().apply { value = emptyList() }
     val items: LiveData<List<User>> = _items
 
+    private val _isDataLoading = MutableLiveData<Boolean>()
+    val isDataLoading: LiveData<Boolean> = _isDataLoading
+
     private val _openUserEvent = MutableLiveData<Event<String>>()
     val openUserEvent: LiveData<Event<String>> = _openUserEvent
 
@@ -25,8 +28,10 @@ class UserListViewModel : ViewModel() {
     }
 
     fun loadUsers() {
+        _isDataLoading.value = true
         viewModelScope.launch {
             _items.value = repository.getUsers()
+            _isDataLoading.value = false
         }
     }
 
