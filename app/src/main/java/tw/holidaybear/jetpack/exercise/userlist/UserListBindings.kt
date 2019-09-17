@@ -3,9 +3,8 @@ package tw.holidaybear.jetpack.exercise.userlist
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
-import com.bumptech.glide.request.RequestOptions
+import coil.api.load
+import coil.transform.CircleCropTransformation
 import tw.holidaybear.jetpack.exercise.data.User
 
 @BindingAdapter("items")
@@ -15,12 +14,8 @@ fun RecyclerView.setItems(items: List<User>) {
 
 @BindingAdapter("imageUrl")
 fun ImageView.setImage(imageUrl: String?) {
-    imageUrl?.let {
-        Glide.with(this.context)
-            .asBitmap()
-            .load(it)
-            .transition(BitmapTransitionOptions().crossFade(300))
-            .apply(RequestOptions.circleCropTransform())
-            .into(this)
+    load(imageUrl) {
+        crossfade(true)
+        transformations(CircleCropTransformation())
     }
 }
