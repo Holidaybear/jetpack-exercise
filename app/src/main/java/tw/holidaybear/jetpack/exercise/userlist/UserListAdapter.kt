@@ -1,42 +1,42 @@
 package tw.holidaybear.jetpack.exercise.userlist
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.api.load
+import coil.transform.CircleCropTransformation
+import tw.holidaybear.jetpack.exercise.R
 import tw.holidaybear.jetpack.exercise.data.User
 import tw.holidaybear.jetpack.exercise.userlist.UserListAdapter.UserViewHolder
-import tw.holidaybear.jetpack.exercise.databinding.ItemUserBinding
 
-class UserListAdapter(private val viewModel: UserListViewModel) : ListAdapter<User, UserViewHolder>(
+class UserListAdapter(private val items: List<User>) : ListAdapter<User, UserViewHolder>(
     UserDiffCallback()
 ) {
 
+    override fun getItemCount(): Int = items.size
+
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-        val item = getItem(position)
-        holder.bind(viewModel, item)
+        holder.bind(items[position])
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-        return UserViewHolder.from(parent)
+        return UserViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false))
     }
 
-    class UserViewHolder private constructor(private val binding: ItemUserBinding) : RecyclerView.ViewHolder(binding.root) {
+    class UserViewHolder(private val containerView: View) : RecyclerView.ViewHolder(containerView) {
 
-        fun bind(viewModel: UserListViewModel, item: User) {
-            binding.user = item
-            binding.viewmodel = viewModel
-            binding.executePendingBindings()
-        }
-
-        companion object {
-            fun from(parent: ViewGroup): UserViewHolder {
-                val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ItemUserBinding.inflate(layoutInflater, parent, false)
-
-                return UserViewHolder(binding)
+        fun bind(item: User) {
+            containerView.findViewById<ImageView>(R.id.user_avatar).load(item.imageUrl) {
+                crossfade(true)
+                transformations(CircleCropTransformation())
             }
+            containerView.findViewById<TextView>(R.id.user_login).text = item.login
+            containerView.findViewById<TextView>(R.id.user_admin_badge).visibility = if (item.isAdmin) View.VISIBLE else View.GONE
         }
     }
 }
