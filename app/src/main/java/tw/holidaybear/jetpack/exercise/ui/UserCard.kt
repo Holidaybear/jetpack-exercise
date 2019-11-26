@@ -2,6 +2,7 @@ package tw.holidaybear.jetpack.exercise.ui
 
 import androidx.compose.Composable
 import androidx.compose.unaryPlus
+import androidx.ui.core.Alignment
 import androidx.ui.core.Text
 import androidx.ui.core.WithDensity
 import androidx.ui.core.dp
@@ -19,7 +20,7 @@ fun UserAvatar() {
     val vector = +vectorResource(R.drawable.ic_person)
 
     WithDensity {
-        Container(expanded = true, height = 60.dp) {
+        Container(width = vector.defaultWidth.toDp(), height = vector.defaultHeight.toDp()) {
             DrawVector(vector)
         }
     }
@@ -39,13 +40,15 @@ fun UserCard(user: User) {
             Padding(left = 16.dp, right = 16.dp) {
                 FlexRow {
                     inflexible {
-                        Padding(right = 16.dp) {
+                        Container(width = 60.dp, height = 60.dp) {
                             UserAvatar()
                         }
                     }
                     flexible(1f) {
-                        Column(crossAxisSize = LayoutSize.Expand, modifier = Spacing(16.dp)) {
-                            UserTitle(user)
+                        Padding(left = 10.dp) {
+                            Container(height = 60.dp, alignment = Alignment.CenterLeft) {
+                                UserTitle(user)
+                            }
                         }
                     }
                 }

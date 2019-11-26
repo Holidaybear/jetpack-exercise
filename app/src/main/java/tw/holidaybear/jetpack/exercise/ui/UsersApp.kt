@@ -1,7 +1,6 @@
 package tw.holidaybear.jetpack.exercise.ui
 
 import androidx.compose.Composable
-import androidx.compose.Model
 import androidx.ui.core.Opacity
 import androidx.ui.core.Text
 import androidx.ui.core.dp
@@ -13,15 +12,11 @@ import androidx.ui.material.Divider
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.TopAppBar
 import androidx.ui.material.surface.Surface
+import tw.holidaybear.jetpack.exercise.MainViewModel
 import tw.holidaybear.jetpack.exercise.data.User
 
-@Model
-class UserStatus(
-    var users: List<User> = emptyList()
-)
-
 @Composable
-fun UsersApp(userStatus: UserStatus) {
+fun UsersApp(viewModel: MainViewModel) {
     MaterialTheme(colors = lightThemeColors) {
         Surface {
             FlexColumn {
@@ -33,7 +28,7 @@ fun UsersApp(userStatus: UserStatus) {
                 flexible(flex = 1f) {
                     VerticalScroller {
                         Column {
-                            HomeScreen(userStatus.users)
+                            HomeScreen(viewModel.users.value)
                         }
                     }
                 }
@@ -43,8 +38,8 @@ fun UsersApp(userStatus: UserStatus) {
 }
 
 @Composable
-private fun HomeScreen(users: List<User>) {
-    users.forEach { user ->
+private fun HomeScreen(users: List<User>?) {
+    users?.forEach { user ->
         UserCard(user)
         HomeScreenDivider()
     }

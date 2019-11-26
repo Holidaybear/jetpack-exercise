@@ -2,36 +2,33 @@ package tw.holidaybear.jetpack.exercise
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.compose.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.ui.core.setContent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import tw.holidaybear.jetpack.exercise.data.API_TOKEN
-import tw.holidaybear.jetpack.exercise.data.GitHubAPI
-import tw.holidaybear.jetpack.exercise.ui.UserStatus
 import tw.holidaybear.jetpack.exercise.ui.UsersApp
 
 class MainActivity : AppCompatActivity() {
 
-    private var userStatus = UserStatus()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         setContent {
-            UsersApp(userStatus)
+            +observe(viewModel.users)
+            UsersApp(viewModel)
         }
     }
+}
 
-    override fun onResume() {
-        super.onResume()
+fun <T> observe(data: LiveData<T>) = effectOf<T?> {
+    val result = +state { data.value }
+    val observer = +memo { Observer<T> { result.value = it } }
 
-        GlobalScope.launch {
-            val api = GitHubAPI.create()
-            val response = api.getUsers(API_TOKEN)
-            withContext(Dispatchers.Main) {
-                userStatus.users = response.await().body() ?: emptyList()
-            }
-        }
+    +onCommit(data) {
+        data.observeForever(observer)
+        onDispose { data.removeObserver(observer) }
     }
+
+    result.value
 }
