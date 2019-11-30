@@ -15,7 +15,7 @@ class MainViewModel : ViewModel() {
 
     private val api = GitHubAPI.create()
 
-    private val _users = MutableLiveData<List<User>>().apply { value = emptyList() }
+    private val _users = MutableLiveData<List<User>>()
     val users: LiveData<List<User>> = _users
 
     init {
