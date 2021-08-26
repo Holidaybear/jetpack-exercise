@@ -6,10 +6,10 @@ import tw.holidaybear.jetpack.exercise.data.User
 @Dao
 interface UserDao {
 
-    @Query("SELECT * FROM User")
+    @Query("SELECT * FROM users")
     suspend fun getUsers(): List<User>
 
-    @Query("SELECT * FROM User WHERE login = :login")
+    @Query("SELECT * FROM users WHERE login = :login")
     suspend fun getUser(login: String): User
 
     @Insert
