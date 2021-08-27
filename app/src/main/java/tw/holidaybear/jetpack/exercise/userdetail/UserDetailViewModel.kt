@@ -1,21 +1,39 @@
 package tw.holidaybear.jetpack.exercise.userdetail
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.transform
 import tw.holidaybear.jetpack.exercise.data.User
 import tw.holidaybear.jetpack.exercise.data.UserRepository
+import javax.inject.Inject
 
-class UserDetailViewModel(private val repository: UserRepository) : ViewModel() {
+@HiltViewModel
+class UserDetailViewModel @Inject constructor(
+    private val repository: UserRepository
+) : ViewModel() {
 
-    private val _user = MutableLiveData<User>()
-    val user: LiveData<User> = _user
+    private val userLogin = MutableStateFlow("")
 
-    fun loadUser(login: String) {
-        viewModelScope.launch {
-            _user.value = repository.getUser(login)
+    val uiState: Flow<DetailUiState>
+        get() = userLogin.transform { login ->
+            emit(DetailUiState.StateLoading)
+            try {
+                val user = repository.getUser(login)
+                emit(DetailUiState.StateLoaded(user))
+            } catch (exception: Exception) {
+                emit(DetailUiState.StateError("Error Occurred!"))
+            }
         }
+
+    fun getUserDetail(login: String) {
+        userLogin.value = login
     }
+}
+
+sealed class DetailUiState {
+    object StateLoading : DetailUiState()
+    data class StateLoaded(val user: User) : DetailUiState()
+    data class StateError(val message: String) : DetailUiState()
 }

@@ -10,13 +10,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import retrofit2.Response
-import tw.holidaybear.jetpack.exercise.data.remote.GitHubAPI
+import tw.holidaybear.jetpack.exercise.data.GitHubService
 
 @RunWith(JUnit4::class)
-class GitHubAPITest {
+class GitHubServiceTest {
 
     @MockK
-    lateinit var api: GitHubAPI
+    lateinit var service: GitHubService
 
     @Before
     fun setUp() {
@@ -26,9 +26,9 @@ class GitHubAPITest {
     @Test
     fun testUsersResponse() {
         runBlocking {
-            coEvery { api.getUsers(any()) } returns Response.success(testUsers)
+            coEvery { service.getUsers() } returns Response.success(testUsers)
 
-            val apiResponse = api.getUsers("token")
+            val apiResponse = service.getUsers()
 
             assertThat(apiResponse.isSuccessful)
             assertThat(apiResponse.body() != null)
@@ -39,9 +39,9 @@ class GitHubAPITest {
     @Test
     fun testUserResponse() {
         runBlocking {
-            coEvery { api.getUser(any(), any()) } returns Response.success(testUser)
+            coEvery { service.getUser(any()) } returns Response.success(testUser)
 
-            val apiResponse = api.getUser("token", "login")
+            val apiResponse = service.getUser("login")
 
             assertThat(apiResponse.isSuccessful)
             assertThat(apiResponse.body() != null)

@@ -1,38 +1,19 @@
 package tw.holidaybear.jetpack.exercise.userlist
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import tw.holidaybear.jetpack.exercise.data.User
 import tw.holidaybear.jetpack.exercise.data.UserRepository
-import tw.holidaybear.jetpack.exercise.util.Event
+import javax.inject.Inject
 
-class UserListViewModel(private val repository: UserRepository) : ViewModel() {
+@HiltViewModel
+class UserListViewModel @Inject constructor(
+    private val repository: UserRepository
+) : ViewModel() {
 
-    private val _items = MutableLiveData<List<User>>().apply { value = emptyList() }
-    val items: LiveData<List<User>> = _items
-
-    private val _isDataLoading = MutableLiveData<Boolean>()
-    val isDataLoading: LiveData<Boolean> = _isDataLoading
-
-    private val _openUserEvent = MutableLiveData<Event<String>>()
-    val openUserEvent: LiveData<Event<String>> = _openUserEvent
-
-    init {
-        loadUsers()
-    }
-
-    fun loadUsers() {
-        _isDataLoading.value = true
-        viewModelScope.launch {
-            _items.value = repository.getUsers()
-            _isDataLoading.value = false
-        }
-    }
-
-    fun openUser(login: String) {
-        _openUserEvent.value = Event(login)
-    }
+    fun getUsers(): Flow<PagingData<User>> = repository.getUsers().cachedIn(viewModelScope)
 }

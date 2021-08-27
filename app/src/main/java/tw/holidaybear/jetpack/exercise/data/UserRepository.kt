@@ -1,28 +1,35 @@
 package tw.holidaybear.jetpack.exercise.data
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import tw.holidaybear.jetpack.exercise.defaultUser
+import javax.inject.Inject
 
-class UserRepository(private val userRemoteDataSource: UserDataSource,
-                     private val userLocalDataSource: UserDataSource) {
+class UserRepository @Inject constructor(
+    private val gitHubService: GitHubService
+) {
 
-    suspend fun getUsers(): List<User> {
-        return withContext(Dispatchers.IO) {
-            if (userLocalDataSource.getUsers().isEmpty()) {
-                val users = userRemoteDataSource.getUsers()
-                userLocalDataSource.saveUsers(users)
-            }
-            return@withContext userLocalDataSource.getUsers()
-        }
+    fun getUsers(): Flow<PagingData<User>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = NETWORK_PAGE_SIZE,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { UserPagingSource(gitHubService) }
+        ).flow
     }
 
     suspend fun getUser(login: String): User {
         return withContext(Dispatchers.IO) {
-            if (userLocalDataSource.getUser(login).name == null) {
-                val user = userRemoteDataSource.getUser(login)
-                userLocalDataSource.updateUser(user)
-            }
-            return@withContext userLocalDataSource.getUser(login)
+            return@withContext gitHubService.getUser(login).body() ?: defaultUser
         }
+    }
+
+    companion object {
+        private const val NETWORK_PAGE_SIZE = 20
     }
 }
